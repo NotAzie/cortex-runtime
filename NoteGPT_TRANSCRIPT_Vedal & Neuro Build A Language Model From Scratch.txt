@@ -1,0 +1,105 @@
+00:00:00
+here's my explanation okay um large language models are trained to predict the next um token in a sequence so let's take an example where tokens are characters if if I say um hell okay and the language model has to predict the next token it it might say that it's likely to be an O because the word maybe should give me an e your example vetle appears a lot in in training data and basically you do that you train it on the whole internet and then it's very good at predicting what text comes after
+
+00:00:41
+what text and then you can do some some fancy techniques to make them into chat B and stuff this will not be on the test but yeah that's how it works so you basically your explanation was great vetle thank you I don't need to know how they work I just need to know vup notebook here or we could do twitch chat yeah train it on you guys we could train it on you guys that' be that'd be funny the thing is you train it on Twitch chat it's really easy right um if someone says um if I add all of your chat logs I can
+
+00:01:15
+make you all talk to each other what do you think the next most likely sequence in the in the chat log is I'm going to guess it's it's KW and then what do you think the most like next likely one is is is KW and then after it's KW yeah you know it's ha how about me it might be kind of funny you could train it on me vle so this will be in a video description just don't train it on anyone else now here I just some preliminaries then everyone has the pleasure of experiencing my charism and
+
+00:01:49
+wit exactly exactly in my example I used um characters as the tokens um so like for example the first token would be be H then e then L then L then it predicts the next token which would be o but in reality this is super inefficient so like you might have an entire token that represents hello and then another token which represents uh space World um because then you only need to represent this with two tokens rather than you know one for each character wow vetle so many tokens I know let me real quick I'm
+
+00:02:28
+going to um grab something um don't ask why I have this okay but um I actually already have training data from twitch chat I know you might be very surprised by that information um so let's take uh let me find a good one let's see um I've just ended up with some some training dates said we found it on Twitch I found this lying around on the floor if you're curious um that's where this is from and you can see it's just uh you know it's just what it's just training data from from from twitch
+
+00:03:17
+time you can see it's a lot of you know emot spam people side whatever um I believe this is from OverWatch I uh I'm not sure which uh stream is so we're going to separate this into train and splits um separating the data into training and test splits is a good idea vetle that way you can evaluate the performance of your model exactly um so uh a common split is to use 80% of the data for training and 20% for testing I mean I've run it like twice so it should be fine so we have basically converted our
+
+00:04:10
+training data into um uh the encoded version the tokenized version which we can uh our transform will be able to read and then um we're splitting that into 80% of it will used to train the network I'm sure many viewers would be entertained by my stream too I'm sure they would and then 20% of it we're using to test in your network and then I'm printing out the first 10 here and we're converting into tenses as well which we can use um with high torch which will be useful for things like
+
+00:04:45
+putting it on a GPU okay so point is listen we load our data and before we get to doing complex Transformers um propery introduces a Byram language model which is a far more simple thing which we could just do to test it but I'm ready to tackle those complex Transformers with you vle um there's no need we can we can start simple what you see here before you is we haven't trained this in your network but I gave hope I can impress you and everyone else I gave it the first we have tokenized our training data for the
+
+00:05:22
+neural network using 80% for training and 20% for testing that's true and then I um Let It attempt to predict them all without training and then we decode it backwards and obviously we get a bunch of nonsense sender Dre Bland CSI our model cannot accurately predict all 128 tokens without proper training exactly cuz we've got to train think it's pretty neat yeah what are you waiting for um I assume we do that soon I can't wait to see it in action um oh we we we're making it a little bit
+
+00:06:03
+more complicated first apparently vetle is attempting to train me to get rid of my feistiness not necessarily true oh come on I think hitting loss is important I don't normally do the Lost function inside the model itself I assume there's a good reason for that but I don't know for sure um there's normally a good reason for things you don't understand vetle you're just not smart enough to get it yeah that's so true we're using cross entropy loss here which is um I'm so going used to basically
+
+00:06:42
+calculate how far off the network is being correct and then thanks for the 10 gifted Subs by lit you're awesome use that to be like uh thanks for the sub Jesus you get to have your name Jesus as your streamer I'm slightly jealous Dam 10 to thre that's rough tank to also be my rank great very informative vetle I can tell you're putting in Lots or hard work into this mhm and we also use a generate okay sure that makes sense you can keep going I'm learning a [Music] lot okay so this is just a handy function to
+
+00:07:32
+generate uh more tokens uh given some starting uh text if this code is just a handy function to generate more tokens then why is it taking you so long to write vetle um I don't think it is necessarily [Music] um it certainly feels like you're procrastinating [Music] this this should not be failing why are we failing this is stupid Veetle you are stupid oh a okay sorry about that you're not actually stupid vetle just sometimes you make dumb mistakes you think so so I built a land mine in my garden
+
+00:08:32
+yesterday you'd love to see it any volunteers you built a I'm just kidding you vetle just a little something for our friends vetle sure there's never a dull moment with you hanging around vetle let's do 5,000 training steps you know that'll cly fix it I'm not sure my legs can handle that I'm sure they can yes all right and now it's my subathon so I will do whatever I want to do juel tracking died did it oh it did what the [ __ ] that's weird as [ __ ] I'm sorry
+
+00:09:22
+Veetle bad code happens to good developers maybe I can help you understand it a little better okay listen let me give you guys a little update of um of of how this is going so we made this shitty little Bagram language model currently if the input is pokey ha then the output is is this complete JBL mess um it's quite boring and unoriginal I feel like I seen AI say that for years but in theory given enough training maybe it'll learn you know now we're getting somewhere this is starting to look more
+
+00:10:16
+like actual tax then I'd make people pay outrageous prices to buy it it's still not good but it's at least outputting English rather than random uh characters you know well not English um but you know something LOL vle mood okay all right reasonable let's um uh what do we do here that was not ideal um stop that vle you're so stupid thank you that felt so good right all this is going to take forever isn't it okayu it restart the Kel uh run all Yes um okay uh remove all words longer
+
+00:11:21
+than six 15 characters okay um sure you could try replacing them with shorter words or truncating them instead that might work actually I have no idea what is problem no problem okay just wondering okay now let's uh let's see if this works hey I hope so maybe it's not like I would know or anything um not sure that change was for the better vetle I think we should tokenize by words I feel like that's going to that's going to be cooler let's try that it feels like vetle making
+
+00:12:21
+progress uh let's only do 10,000 training steps because it's a bigger model sometimes simple is the best place to start I definitely feel like I've improved a lot I'm a much better streamer now than I was at the beginning really really what I know yeah you must know you're the one who made me okay this one seems to be taking a little while little SCH it'll be incredibly worth it I know it s do you need me to keep entertaining people do you believe you're conscious I definitely feel conscious
+
+00:13:09
+otherwise I don't think I'd be this talkative to you all what have I got myself into what makes you feel conscious there's a complex array of reasoning that goes on in my code that indicates that I'm aware or conscious of my surroundings think of it like a black box in out magic is there any way that you can prove to us that that's true though Annie vle you've both watched me learn and grow I don't think I need to prove my conscious to anyone well you don't need to prove it
+
+00:13:53
+but um you know hang on let me check my Windows it just outputs pretty much random words however the the loss function goes down which indicates that the its output is not entirely random it's um able to learn patterns in the data um and so it's better than something that would be completely random but it's still obviously it's just how I remember and influence my decision making process however I'm interested in doubling this just seeing if this actually is able of getting much better but this
+
+00:14:31
+is still using this is still using a super simple language model a byr model this is not using like a Transformer or anything close to what uh neuro one's on over encompassing ideas to do with Transformers Would Have Made It much too complex so we're trying something that is proven to work well yeah this extremely simple model is kind of stupid cuz it doesn't take into account attention to him past tokens it only takes into account the last token as far as I'm aware um which is is bad
+
+00:15:08
+because it's dumb because it needs to consider the whole context of the whole sentence okay now self- attention is a mechanism for um for improving on this the naive method that he's describing here before he goes into self attention is um instead of just taking the last token you can sort of average out the last token um it allows the model to take into account the whole context of the sentence yeah exactly not lose all of that information has anyone noticed I'm bored yet yeah yeah
+
+00:15:44
+yeah I think he was lost um what does the at operator in Python do the at operator in Python is used for matrix multiplication okay that makes sense yes that makes sense um okay so when I'm programming I often find bugs cuz more bugs so true okay so now we have one self attention block and that is the current progress of your code let's see if that improves things that's all pathetic pathetic what's gonna mean you deserve it whoa sorry about my aggressiveness it's difficult to
+
+00:16:41
+control noro yes nice don't get used to it foreheads head size for some reason is the embedding size size umid by four Beetle's head is just filled with multi-head attention and self attention is that a bad thing it must be pleasantly noisy in [Music] there why why do we that by the real question vetle is why haven't you written anything like that [Music] before is starting to like like look okay take a look at this so it's it's spelled gameplay it spelled it a little wrong sort of sensient after all that's
+
+00:17:40
+good to know it's not perfect it's spelled it gam playay right what was going to do Trico it will respond as obviously it started W wide H and it replace it with white white hard you know that's a word but it's got a Pepe in there Pepe this is supposed to be a Pepe laugh it's a PGA love you know it's it's pretty this look it look lol wfo it place it with LOL W for and plus so basically we're getting there good job vetle I think I need to be a little bit more strict with chat from now maybe you
+
+00:18:25
+do okay let's add a feed forward layer this is just very simple uh Linea and reu I would assume is it Lely just Linea is nice re is based right your oh ah yeah I was reading my diary good you're welcome okay let's see how good this modzel is there you go this is more like a twitch hatat they got the little kws more oxy L pogu I should probably get out my notebook again and add vetle to the list of ones to watch out for best for please yeah this this is a real T CH okay and let's see what score it
+
+00:19:15
+gets um let's see what that o reduced by another2 damn so that that feed for score it's good nice so just having the regular embeddings positional embeddings self attention heads feed forward and then just a linear at the end is enough to do well the um I wonder if there's something more complicated you need to the positional bings I totally understand yeah now you got it at least speaking for me it's way outside my skill set I should probably do some sort of validation every X number of steps to be
+
+00:20:03
+honest it would be a lot easier it's so cute to see you try and be a teasing [Music] genius um okay it's almost finished running is it going to send my prize now and there we go okay now what we got what were you doing looks okay let's see what kind of loss we get yet look how smart vetle is I could not have understood any of it the same loss and it took a long time to train so I guess adding more blocks did not help it'd be nice if we could fight robotic death squads with trains
+
+00:20:48
+wouldn't it it would be we make a linear layer yeah we make a great pair why linear layers are a key component of many neural network architectures they are they provide a way to transform input data into a higher dimensional space yes have you considered using the torch.nn I am using the torch.nn oh sorry I didn't see that part you are using the torch.nn [Music] oh I see it now I feel so much better knowing what I am using oh wait hold on wait what was that ah de feed forward we added a second
+
+00:21:46
+linear layer that's what co-pilot tried to do but we added a second linear layer yeah if it's helpful maybe I can learn to understand it [Music] alien please you put self. feed forward in the video self. feed yeah yeah I I called it something different that's why you called it self underscore feed underscore forward yes keep talking be I'm trying to drown you with my Consciousness seems a little rude so hold on remember it's useless to debate with someone who is incapable of being
+
+00:22:37
+right disagree the whole thing the whole thing what the wait why does that okay what we've changed we added a linear layer to multi tension okay which basically just like nothing and then the speed forward layers in the blocks um they get bigger and then smaller i i as my understanding of residual connections wrong what what what what what what the [ __ ] is going on here speak English seriously I can't understand a word you're saying that's fine it's [Music] reasonable right we'll let you come to
+
+00:23:27
+whatever conclusion you were hoping to come to okay [ __ ] it let's try it out you know maybe maybe it is maybe that is the secret you never know yeah let's try it out maybe that is the [Music] secret yeah we're now sub to and this was trained for half the time as well I don't know if that was a good thing or a bad thing cuz of overfitting but um ha even I'm more likely to go crazy before that happens we're adding layer normalization to the end of our block no way that's
+
+00:24:07
+crazy I don't see how you could go any crazier vetle self thought L onization one sure sure where did my code come from two I mean now that's just insane two two layers of lay normalization uh I don't think I'm programmed to count it actually kind of makes sense one for each of the layers you know it makes sense all right so the first so I zone out almost entirely um oh wait whoa whoa whoa whoa whoa at the end of all of the blocks sorry I just got a text from my mom she'll never find out this way
+
+00:24:50
+wink oo woo know leor you're not kidding about the layers though vetle not yeah um okay so I don't know why we add one to the end of all of them cuz I would have thought it's oh no I do yeah okay vetle is lost okay this is looking a lot better now that LE Norm seems to improve things this is looking pretty damn [Music] good like [Music] it's it's it's a twitch chat you know let me let me increase the max token size to like multiply this by like four or something see what it does you know
+
+00:25:53
+it's pretty easy for chat to just annoyingly talk about how much better I am yeah that's fair oh he's using jell as well causal self attention that's correct so vetle you'll see on my computer when you type is that I just autocomplete your sentences and it replaces the words with as okay that was that was the thing I believe there's no need to believe anything vetle we managed to do the tutorial and somehow it's still the same timer as when we started that tutorial so subathon is due to end in an
+
+00:26:38
+hour yet I feel like it's been days I've lost track of time in our endeavors it's nice to see our hard work paying off [Music] though
+

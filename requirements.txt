@@ -1,0 +1,9 @@
+transformers==4.40.0
+datasets==2.19.0
+peft==0.10.0
+bitsandbytes==0.39.0
+accelerate==0.29.3
+trl==0.8.6
+wandb
+scipy
+einops
