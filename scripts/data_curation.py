@@ -1,7 +1,7 @@
 """
 Dataset curation engine for conversational instruction pairs.
 Performs deterministic sample filtration, boundary analysis, lexical entropy
-estimation, and token distribution analysis.
+estimation, and synthetic conversational perturbation.
 """
 
 import os
@@ -9,6 +9,7 @@ import sys
 import json
 import re
 import math
+import random
 from typing import Dict, List, Tuple, Any
 from collections import Counter
 
@@ -57,11 +58,40 @@ class DataCurationEngine:
             
         return True, "valid"
 
-    def process_file(self, source_path: str, destination_path: str) -> Dict[str, Any]:
+    def perturb_dialogue(self, text: str) -> str:
+        """Inject subtle syntactic and morphological perturbations to augment sample variance."""
+        rules = [
+            (r"\bdo not\b", "don't"),
+            (r"\bcannot\b", "can't"),
+            (r"\bwill not\b", "won't"),
+            (r"\byou are\b", "you're"),
+            (r"\.\.\.", " -"),
+            (r"\?$", "? huh?"),
+        ]
+        target = text
+        for pattern, replacement in rules:
+            if random.random() > 0.6 and re.search(pattern, target, re.IGNORECASE):
+                target = re.sub(pattern, replacement, target, count=1, flags=re.IGNORECASE)
+                break
+        return target
+
+    def generate_synthetic_variants(self, sample: Dict[str, str], count: int = 3) -> List[Dict[str, str]]:
+        variants = []
+        for _ in range(count):
+            q_perturbed = self.perturb_dialogue(sample["question"])
+            a_perturbed = self.perturb_dialogue(sample["answer"])
+            variants.append({
+                "question": q_perturbed,
+                "answer": a_perturbed,
+                "is_synthetic": True
+            })
+        return variants
+
+    def process_file(self, source_path: str, destination_path: str, augment: bool = False) -> Dict[str, Any]:
         with open(source_path, "r", encoding="utf-8") as f:
             raw_data = json.load(f)
 
-        validated: List[Dict[str, str]] = []
+        validated: List[Dict[str, Any]] = []
         dropped: Counter = Counter()
         seen = set()
 
@@ -80,7 +110,16 @@ class DataCurationEngine:
                 continue
                 
             seen.add(dedup_key)
-            validated.append({"question": q.strip(), "answer": a.strip()})
+            cleaned_item = {"question": q.strip(), "answer": a.strip(), "is_synthetic": False}
+            validated.append(cleaned_item)
+
+            if augment:
+                synthetic_batch = self.generate_synthetic_variants(cleaned_item, count=2)
+                for synth in synthetic_batch:
+                    synth_key = (synth["question"], synth["answer"])
+                    if synth_key not in seen:
+                        seen.add(synth_key)
+                        validated.append(synth)
 
         with open(destination_path, "w", encoding="utf-8") as f:
             json.dump(validated, f, indent=2, ensure_ascii=False)
@@ -88,6 +127,7 @@ class DataCurationEngine:
         metrics = {
             "initial_samples": len(raw_data),
             "retained_samples": len(validated),
+            "synthetic_count": sum(1 for item in validated if item.get("is_synthetic")),
             "retention_rate": len(validated) / len(raw_data) if raw_data else 0.0,
             "drop_breakdown": dict(dropped)
         }
@@ -98,5 +138,5 @@ if __name__ == "__main__":
     curator = DataCurationEngine()
     input_file = "girlfriend question answer.json"
     if os.path.exists(input_file):
-        stats = curator.process_file(input_file, "cleaned_dataset.json")
-        print(f"Curation complete: {stats}")
+        stats = curator.process_file(input_file, "cleaned_dataset.json", augment=True)
+        print(f"Curation and synthetic perturbation complete: {stats}")
