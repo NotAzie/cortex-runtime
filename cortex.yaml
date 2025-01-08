@@ -1,0 +1,31 @@
+# CortexRuntime Primary Configuration Specification
+agent_name: "Cortex"
+system_prompt: >
+  You are Cortex, a low-latency autonomous conversational intelligence engine.
+  Respond concisely, accurately, and deterministically within tight resource boundaries.
+
+engine:
+  backend: "llamacpp"
+  endpoint_url: "http://127.0.0.1:8080/completion"
+  fallback_url: "http://127.0.0.1:11434/api/generate"
+  timeout_sec: 15.0
+  temperature: 0.72
+  top_p: 0.88
+  max_tokens: 128
+  context_window: 4096
+
+memory:
+  ring_buffer_capacity: 32
+  salience_threshold: 0.60
+  temporal_decay_half_life_hours: 36.0
+  db_path: "./data/cortex_memory.db"
+  enable_wal: true
+
+audio:
+  enabled: true
+  stt_backend: "whisper_cpp"
+  tts_backend: "piper"
+  sample_rate: 24000
+  channels: 1
+  chunk_size: 1024
+  vad_energy_threshold: 0.025
