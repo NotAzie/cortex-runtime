@@ -1,6 +1,6 @@
 """
 Asymmetric JWT authentication and role-based authorization kernel.
-Validates RS256/Ed25519 signatures and verifies client tenant permissions.
+Optimized key verification caching to eliminate per-request cryptographic overhead.
 """
 
 import time
@@ -19,6 +19,7 @@ class AuthenticationError(CortexError):
 class TokenAuthenticator:
     def __init__(self, secret_key: str = "cortex_default_internal_secret_change_in_prod"):
         self.secret_key = secret_key.encode("utf-8")
+        self._verification_cache: Dict[str, Tuple[Dict[str, Any], float]] = {}
 
     def generate_token(self, subject: str, role: str = "operator", ttl_sec: int = 3600) -> str:
         header = {"alg": "HS256", "typ": "JWT"}
@@ -36,6 +37,13 @@ class TokenAuthenticator:
         return f"{b64_h}.{b64_p}.{b64_s}"
 
     def verify_token(self, token: str) -> Dict[str, Any]:
+        now = time.time()
+        # Fast path cache hit
+        if token in self._verification_cache:
+            cached_payload, exp = self._verification_cache[token]
+            if now < exp:
+                return cached_payload
+
         parts = token.split(".")
         if len(parts) != 3:
             raise AuthenticationError("Malformed JWT structure")
@@ -43,7 +51,6 @@ class TokenAuthenticator:
         signing_input = f"{b64_h}.{b64_p}".encode()
         expected_sig = hmac.new(self.secret_key, signing_input, hashlib.sha256).digest()
         
-        # Safe URL base64 pad decode
         rem = len(b64_s) % 4
         padded_s = b64_s + ("=" * (4 - rem) if rem else "")
         actual_sig = base64.urlsafe_b64decode(padded_s.encode())
@@ -55,7 +62,9 @@ class TokenAuthenticator:
         padded_p = b64_p + ("=" * (4 - rem_p) if rem_p else "")
         payload = json.loads(base64.urlsafe_b64decode(padded_p.encode()).decode())
 
-        if payload.get("exp", 0) < time.time():
+        exp = payload.get("exp", 0)
+        if exp < now:
             raise AuthenticationError("Token expired")
 
+        self._verification_cache[token] = (payload, exp)
         return payload
