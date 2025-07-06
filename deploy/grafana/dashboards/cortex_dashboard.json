@@ -1,0 +1,20 @@
+{
+  "title": "CortexRuntime Telemetry Dashboard",
+  "panels": [
+    {
+      "title": "Time To First Token (TTFT)",
+      "type": "stat",
+      "targets": [{"expr": "cortex_last_ttft_seconds"}]
+    },
+    {
+      "title": "Tokens Per Second (TPS)",
+      "type": "gauge",
+      "targets": [{"expr": "cortex_last_tokens_per_second"}]
+    },
+    {
+      "title": "Audio Preemption Interrupts",
+      "type": "graph",
+      "targets": [{"expr": "rate(cortex_total_audio_interrupts[1m])"}]
+    }
+  ]
+}

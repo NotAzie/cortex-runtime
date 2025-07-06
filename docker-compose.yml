@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  cortex-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cortex-runtime
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+      - "9090:9090"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - CORTEX_ENV=production
+      - CORTEX_ENGINE_ENDPOINT=http://llama-server:8080/completion
+    networks:
+      - cortex-mesh
+
+  llama-server:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    container_name: cortex-llama-server
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    command: ["-m", "/models/model.gguf", "-c", "4096", "--host", "0.0.0.0", "--port", "8080"]
+    volumes:
+      - ./models:/models
+    networks:
+      - cortex-mesh
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cortex-prometheus
+    restart: unless-stopped
+    ports:
+      - "9091:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - cortex-mesh
+
+networks:
+  cortex-mesh:
+    driver: bridge
