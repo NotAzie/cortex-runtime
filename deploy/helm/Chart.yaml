@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cortex-runtime
+description: Enterprise Helm Chart for CortexRuntime Conversational Intelligence Mesh
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
