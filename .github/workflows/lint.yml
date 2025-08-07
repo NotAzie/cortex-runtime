@@ -1,0 +1,23 @@
+name: Code Quality and Security Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Ruff & MyPy Strict Verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Linters
+        run: pip install ruff mypy
+      - name: Run Ruff Format & Lint Check
+        run: ruff check cortex/ tests/
+      - name: Run MyPy Type Check
+        run: mypy --ignore-missing-imports cortex/
