@@ -1,8 +1,20 @@
 """
-CortexRuntime: High-Performance Autonomous Conversational Intelligence Engine.
-Sub-Millisecond Context Orchestration Kernel, Tri-Tier Hybrid Memory Architecture,
-and Real-Time Low-Latency Streaming Inference Mesh.
+CortexRuntime V2: Autonomous Zero-Latency Conversational Intelligence Engine.
 """
 
-__version__ = "0.1.0-alpha"
-__author__ = "NotAzie"
+from cortex.v2.synapse import Synapse
+from cortex.v2.types import CoSynthesisFrame, CausalHypothesis
+from cortex.v2.memory.hyperdimensional import HyperVector10k, HolographicMemoryMesh
+from cortex.v2.engine.anticipator import CausalAnticipator
+from cortex.v2.audio.co_synthesis import UnifiedCoSynthesisMesh
+
+__version__ = "2.0.0"
+__all__ = [
+    "Synapse",
+    "CoSynthesisFrame",
+    "CausalHypothesis",
+    "HyperVector10k",
+    "HolographicMemoryMesh",
+    "CausalAnticipator",
+    "UnifiedCoSynthesisMesh"
+]
