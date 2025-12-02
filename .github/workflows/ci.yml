@@ -1,4 +1,4 @@
-name: Continuous Integration Matrix
+name: Continuous Integration Matrix (Cortex V2)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Test (${{ matrix.os }} - Py${{ matrix.python-version }})
+    name: V2 Neural Mesh (${{ matrix.os }} - Py${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -31,6 +31,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-asyncio pyyaml aiohttp pydantic fastapi httpx
 
-      - name: Execute Test Suite
+      - name: Execute Full V2 Test Suite
         run: |
           pytest tests/ -v
