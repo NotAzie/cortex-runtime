@@ -6,6 +6,7 @@ Maps internal conversational sentiment and external interaction context into a c
 
 import math
 from dataclasses import dataclass
+from typing import Dict, Optional
 
 
 @dataclass

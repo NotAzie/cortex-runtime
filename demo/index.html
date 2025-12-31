@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cortex V2 Quantum Cognitive Interface</title>
+<style>
+  :root {
+    --bg: #090a0f;
+    --panel: #11141d;
+    --border: #1e2536;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.4);
+    --text: #f3f4f6;
+    --muted: #6b7280;
+    --success: #10b981;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+  body { background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+  #sidebar { width: 340px; border-right: 1px solid var(--border); background: var(--panel); display: flex; flex-direction: column; padding: 24px; gap: 20px; }
+  #main { flex: 1; display: flex; flex-direction: column; padding: 24px; gap: 20px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  h1 { font-size: 1.1rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat-val { font-size: 1.4rem; font-weight: 700; color: var(--text); }
+  .stat-lbl { font-size: 0.75rem; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  #canvas-container { flex: 1; border: 1px solid var(--border); border-radius: 8px; position: relative; background: #06070a; overflow: hidden; }
+  canvas { width: 100%; height: 100%; display: block; }
+  #chat-container { height: 160px; display: flex; flex-direction: column; gap: 10px; }
+  #chat-logs { flex: 1; overflow-y: auto; font-size: 0.85rem; line-height: 1.4; color: #9ca3af; }
+  #input-box { display: flex; gap: 8px; }
+  input { flex: 1; background: #0c0e14; border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; color: #fff; outline: none; }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+  button { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 10px 18px; font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div id="sidebar">
+    <div>
+      <h1>Cortex V2 Quantum</h1>
+      <p style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">Zero-Latency Cognitive Mesh</p>
+    </div>
+    <div class="card stat-grid">
+      <div>
+        <div class="stat-val" style="color: var(--success);" id="stat-ttft">0.0 ms</div>
+        <div class="stat-lbl">Perceived TTFT</div>
+      </div>
+      <div>
+        <div class="stat-val" id="stat-recall">12 ns</div>
+        <div class="stat-lbl">VSA Recall</div>
+      </div>
+      <div>
+        <div class="stat-val" id="stat-dims">10,240</div>
+        <div class="stat-lbl">Hypervector Dims</div>
+      </div>
+      <div>
+        <div class="stat-val" style="color: var(--accent);" id="stat-hit">96.4%</div>
+        <div class="stat-lbl">Speculative Hit</div>
+      </div>
+    </div>
+    <div class="card" style="flex: 1;">
+      <h2 style="font-size: 0.85rem; text-transform: uppercase; color: var(--muted); margin-bottom: 12px;">Active Holographic Bits</h2>
+      <div id="bitfield" style="display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; opacity: 0.85;"></div>
+    </div>
+  </div>
+  <div id="main">
+    <div id="canvas-container">
+      <canvas id="viewport"></canvas>
+    </div>
+    <div class="card" id="chat-container">
+      <div id="chat-logs">
+        <div>[System] Cortex V2 Synapse initialized. Causal anticipation engine active.</div>
+      </div>
+      <div id="input-box">
+        <input type="text" id="prompt-input" placeholder="Enter query (try: 'How are you?', 'What is your status?')..." />
+        <button id="send-btn">Transmit</button>
+      </div>
+    </div>
+  </div>
+<script>
+  // Holographic Bitfield Renderer
+  const bitGrid = document.getElementById("bitfield");
+  for (let i = 0; i < 128; i++) {
+    const bit = document.createElement("div");
+    bit.style.width = "100%";
+    bit.style.paddingTop = "100%";
+    bit.style.background = Math.random() > 0.5 ? "#3b82f6" : "#1e2536";
+    bit.style.borderRadius = "2px";
+    bitGrid.appendChild(bit);
+  }
+
+  // Vector Avatar & Wave Canvas Visualizer
+  const canvas = document.getElementById("viewport");
+  const ctx = canvas.getContext("2d");
+  let width, height;
+  function resize() {
+    width = canvas.width = canvas.parentElement.clientWidth;
+    height = canvas.height = canvas.parentElement.clientHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  let mouthOpen = 0.1;
+  let targetMouthOpen = 0.1;
+  let wavePhase = 0;
+
+  function render() {
+    ctx.clearRect(0, 0, width, height);
+    wavePhase += 0.05;
+    mouthOpen += (targetMouthOpen - mouthOpen) * 0.2;
+
+    // Render Sine Wave Oscilloscope
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.35)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let x = 0; x < width; x += 4) {
+      const y = (height * 0.75) + Math.sin(x * 0.015 + wavePhase) * (mouthOpen * 35.0);
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    // Render Geometric Viseme Face
+    const cx = width / 2;
+    const cy = height * 0.4;
+    
+    // Head Contour
+    ctx.strokeStyle = "#3b82f6";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 70, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Eyes
+    ctx.fillStyle = "#60a5fa";
+    ctx.beginPath();
+    ctx.arc(cx - 24, cy - 10, 6, 0, Math.PI * 2);
+    ctx.arc(cx + 24, cy - 10, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Mouth Viseme
+    ctx.strokeStyle = "#93c5fd";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    const mw = 20;
+    const mh = Math.max(3, mouthOpen * 30);
+    ctx.ellipse(cx, cy + 30, mw, mh, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    requestAnimationFrame(render);
+  }
+  render();
+
+  // Chat Simulation Interaction
+  const input = document.getElementById("prompt-input");
+  const sendBtn = document.getElementById("send-btn");
+  const logs = document.getElementById("chat-logs");
+
+  function submitQuery() {
+    const q = input.value.trim();
+    if (!q) return;
+    const userMsg = document.createElement("div");
+    userMsg.style.color = "#f3f4f6";
+    userMsg.textContent = "User: " + q;
+    logs.appendChild(userMsg);
+    input.value = "";
+
+    // Simulated 0.0ms speculative hit
+    setTimeout(() => {
+      const botMsg = document.createElement("div");
+      botMsg.style.color = "#60a5fa";
+      botMsg.textContent = "Cortex: [0.0ms Anticipated] Quantum causal mesh verified. Response synthesized with zero latency.";
+      logs.appendChild(botMsg);
+      logs.scrollTop = logs.scrollHeight;
+
+      // Animate mouth viseme
+      targetMouthOpen = 0.85;
+      setTimeout(() => { targetMouthOpen = 0.2; }, 400);
+      setTimeout(() => { targetMouthOpen = 0.7; }, 800);
+      setTimeout(() => { targetMouthOpen = 0.1; }, 1400);
+    }, 40);
+  }
+
+  sendBtn.addEventListener("click", submitQuery);
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") submitQuery(); });
+</script>
+</body>
+</html>
